@@ -23,6 +23,9 @@
 # Visual Studio cache directory
 .vs/
 
+# .junk directory
+.junk/
+
 # Gradle cache directory
 .gradle/
 
