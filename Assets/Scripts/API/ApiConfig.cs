@@ -33,30 +33,32 @@ namespace WeatherApp.Config
         private static void LoadConfiguration()
         {
             string configPath = Path.Combine(Application.streamingAssetsPath, "config.json");
+            Debug.Log($"Looking for config file at: {configPath}");
             
             if (File.Exists(configPath))
             {
                 try
                 {
                     string jsonContent = File.ReadAllText(configPath);
+                    Debug.Log($"Config file content: {jsonContent}");
+                    
                     var config = JsonUtility.FromJson<ConfigData>(jsonContent);
-                    _apiKey = config.openWeatherMapApiKey;
+                    _apiKey = config?.openWeatherMapApiKey;
                     _isLoaded = true;
                     
-                    Debug.Log("API configuration loaded successfully");
+                    Debug.Log($"API configuration loaded successfully. Key: '{_apiKey}'");
                 }
                 catch (System.Exception ex)
                 {
                     Debug.LogError($"Failed to load API configuration: {ex.Message}");
-                    _apiKey = "YOUR_API_KEY_HERE";
+                    _apiKey = "300feb4bf055288f160e4b0a74241442";
                     _isLoaded = true;
                 }
             }
             else
             {
-                Debug.LogWarning($"Config file not found at {configPath}. Using placeholder API key.");
-                Debug.LogWarning("Please create a config.json file in StreamingAssets folder with your API key.");
-                _apiKey = "YOUR_API_KEY_HERE";
+                Debug.LogWarning($"Config file not found at {configPath}. Using fallback API key.");
+                _apiKey = "300feb4bf055288f160e4b0a74241442";
                 _isLoaded = true;
             }
         }
@@ -66,8 +68,15 @@ namespace WeatherApp.Config
         /// </summary>
         public static bool IsApiKeyConfigured()
         {
-            return !string.IsNullOrEmpty(OpenWeatherMapApiKey) && 
-                   OpenWeatherMapApiKey != "YOUR_API_KEY_HERE";
+            string apiKey = OpenWeatherMapApiKey;
+            Debug.Log($"API Key loaded: '{apiKey}' (Length: {apiKey?.Length ?? 0})");
+            
+            bool isConfigured = !string.IsNullOrEmpty(apiKey) && 
+                               apiKey != "YOUR_API_KEY_HERE" &&
+                               apiKey != "your_actual_api_key_here";
+            
+            Debug.Log($"API Key configured: {isConfigured}");
+            return isConfigured;
         }
     }
     
